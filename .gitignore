@@ -1,0 +1,11 @@
+venv/
+node_modules/
+.DS_Store
+.env
+.env.local
+.next/
+out/
+youtube-faq/.next/
+youtube-faq/node_modules/
+youtube-faq/venv/
+
