@@ -1,0 +1,73 @@
+# YouTube FAQ Search Engine
+
+## Project Overview
+A YouTube FAQ search engine for content creators that enables bulk transcript uploads for entire YouTube channels. Users can search for answers using natural language, and the system finds relevant segments, provides timestamps, and gives AI-summarized responses.
+
+## Technical Stack
+- Next.js 14 with App Router and TypeScript
+- Supabase for: PostgreSQL + pgvector, Auth, Storage
+- OpenAI for embeddings (text-embedding-3-small) and completions (gpt-4o-mini)
+- Vercel deployment
+- Tailwind CSS with shadcn/ui components
+
+## Database Schema
+1. profiles (user_id, email, openai_api_key[encrypted])
+2. channels (id, user_id, name, youtube_url)
+3. videos (id, channel_id, youtube_id, title, url, uploaded_at)
+4. transcript_chunks (id, video_id, content, embedding[vector], start_time, end_time, chunk_index)
+5. conversations (id, user_id, channel_id, created_at)
+6. messages (id, conversation_id, role, content, created_at)
+
+## Core Features
+1. Creators upload transcript files (.txt/.srt) with timestamps
+2. System chunks transcripts (500-1000 tokens) preserving timestamp boundaries
+3. Each chunk gets embedded via OpenAI
+4. Visitors search using natural language
+5. System performs vector similarity search
+6. Returns top 3-5 most relevant chunks
+7. AI summarizes findings with citations (video link + timestamp)
+8. Maintains conversation context for follow-ups
+
+## Implementation Priorities
+1. Security: Encrypt API keys, validate all inputs, rate limit by IP/user
+2. Performance: Implement caching, lazy load results, optimize embeddings
+3. UX: Clean, minimal interface. Think Perplexity meets FAQ page
+4. Scale: Handle 500 videos per channel, multiple channels per creator
+
+## Roadmap (NEVER delete completed items, only check them off)
+
+### Phase 1: Foundation
+- [x] Next.js app with TypeScript
+- [x] Supabase setup (auth + vector DB + storage)
+- [x] Basic auth flow with API key management
+- [x] Database schema for channels, videos, transcripts
+
+### Phase 2: Data Pipeline
+- [ ] Transcript upload interface
+- [ ] Transcript chunking logic (500-1000 tokens)
+- [ ] OpenAI embedding generation
+- [ ] Vector storage with metadata (video ID, timestamp, channel)
+
+### Phase 3: Search Core
+- [ ] Semantic search implementation
+- [ ] Result ranking by relevance + recency
+- [ ] Multi-result aggregation logic
+- [ ] Timestamp extraction from chunks
+
+### Phase 4: Frontend
+- [ ] Minimalist search interface
+- [ ] Answer display with video links/timestamps
+- [ ] Conversation context management
+- [ ] Follow-up question handling
+
+### Phase 5: Polish
+- [ ] Rate limiting per user
+- [ ] Usage analytics
+- [ ] Creator dashboard
+- [ ] Deployment to Vercel
+
+## Development Guidelines
+- Focus on getting auth and database structure right first
+- Everything else builds on this foundation
+- Maintain clean, minimal interface throughout
+- Prioritize security and performance from the start
