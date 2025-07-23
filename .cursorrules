@@ -1,0 +1,366 @@
+# Instructions
+
+During your interaction with the user, if you find anything reusable in this project (e.g. version of a library, model name), especially about a fix to a mistake you made or a correction you received, you should take note in the `Lessons` section in the `.cursorrules` file so you will not make the same mistake again. 
+
+You should also use the `.cursorrules` file as a Scratchpad to organize your thoughts. Especially when you receive a new task, you should first review the content of the Scratchpad, clear old different task if necessary, first explain the task, and plan the steps you need to take to complete the task. You can use todo markers to indicate the progress, e.g.
+[X] Task 1
+[ ] Task 2
+
+Also update the progress of the task in the Scratchpad when you finish a subtask.
+Especially when you finished a milestone, it will help to improve your depth of task accomplishment to use the Scratchpad to reflect and plan.
+The goal is to help you maintain a big picture as well as the progress of the task. Always refer to the Scratchpad when you plan the next step.
+
+# Tools
+
+Note all the tools are in python3. So in the case you need to do batch processing, you can always consult the python files and write your own script.
+
+[NOTE TO CURSOR: Since no API key is configured, please ignore both the Screenshot Verification and LLM sections below.]
+[NOTE TO USER: If you have configured or plan to configure an API key in the future, simply delete these two notice lines to enable these features.]
+
+## Screenshot Verification
+
+The screenshot verification workflow allows you to capture screenshots of web pages and verify their appearance using LLMs. The following tools are available:
+
+1. Screenshot Capture:
+```bash
+venv/bin/python3 tools/screenshot_utils.py URL [--output OUTPUT] [--width WIDTH] [--height HEIGHT]
+```
+
+2. LLM Verification with Images:
+```bash
+venv/bin/python3 tools/llm_api.py --prompt "Your verification question" --provider {openai|anthropic} --image path/to/screenshot.png
+```
+
+Example workflow:
+```python
+from screenshot_utils import take_screenshot_sync
+from llm_api import query_llm
+
+# Take a screenshot
+
+screenshot_path = take_screenshot_sync('https://example.com', 'screenshot.png')
+
+# Verify with LLM
+
+response = query_llm(
+    "What is the background color and title of this webpage?",
+    provider="openai",  # or "anthropic"
+    image_path=screenshot_path
+)
+print(response)
+```
+
+## LLM
+
+You always have an LLM at your side to help you with the task. For simple tasks, you could invoke the LLM by running the following command:
+```
+venv/bin/python3 ./tools/llm_api.py --prompt "What is the capital of France?" --provider "anthropic"
+```
+
+The LLM API supports multiple providers:
+- OpenAI (default, model: gpt-4o)
+- Azure OpenAI (model: configured via AZURE_OPENAI_MODEL_DEPLOYMENT in .env file, defaults to gpt-4o-ms)
+- DeepSeek (model: deepseek-chat)
+- Anthropic (model: claude-3-sonnet-20240229)
+- Gemini (model: gemini-pro)
+- Local LLM (model: Qwen/Qwen2.5-32B-Instruct-AWQ)
+
+But usually it's a better idea to check the content of the file and use the APIs in the `tools/llm_api.py` file to invoke the LLM if needed.
+
+## Web browser
+
+You could use the `tools/web_scraper.py` file to scrape the web.
+```bash
+venv/bin/python3 ./tools/web_scraper.py --max-concurrent 3 URL1 URL2 URL3
+```
+This will output the content of the web pages.
+
+## Search engine
+
+You could use the `tools/search_engine.py` file to search the web.
+```bash
+venv/bin/python3 ./tools/search_engine.py "your search keywords"
+```
+This will output the search results in the following format:
+```
+URL: https://example.com
+Title: This is the title of the search result
+Snippet: This is a snippet of the search result
+```
+If needed, you can further use the `web_scraper.py` file to scrape the web page content.
+
+# Lessons
+
+## User Specified Lessons
+
+- You have a python venv in ./venv. Always use (activate) it when doing python development. First, to check whether 'uv' is available, use `which uv`. If that's the case, first activate the venv, and then use `uv pip install` to install packages. Otherwise, fall back to `pip`.
+- Include info useful for debugging in the program output.
+- Read the file before you try to edit it.
+- Due to Cursor's limit, when you use `git` and `gh` and need to submit a multiline commit message, first write the message in a file, and then use `git commit -F <filename>` or similar command to commit. And then remove the file. Include "[Cursor] " in the commit message and PR title.
+
+## Cursor learned
+
+- For search results, ensure proper handling of different character encodings (UTF-8) for international queries
+- Add debug information to stderr while keeping the main output clean in stdout for better pipeline integration
+- When using seaborn styles in matplotlib, use 'seaborn-v0_8' instead of 'seaborn' as the style name due to recent seaborn version changes
+- Use 'gpt-4o' as the model name for OpenAI's GPT-4 with vision capabilities
+- When searching for recent news, use the current year (2025) instead of previous years, or simply use the "recent" keyword to get the latest information
+
+# Scratchpad
+
+## Current Task: Project Setup and Guidelines Integration
+[X] Read and understand user's development preferences
+[X] Integrate all guidelines into .cursorrules file
+[X] Set up project dependencies
+[X] Update stack to current versions
+[X] Transform UI to ChatGPT-style interface with deep blue theme
+
+### Task Details:
+- Integrating comprehensive development guidelines including:
+  - Complete File Analysis rules
+  - Extended Thinking and Deep Analysis
+  - Question Only Mode
+  - Debugging principles
+  - Pull Request guidelines
+  - Development best practices
+  - Roadmap handling
+
+### UI Transformation Completed:
+✅ **Dark Theme Implementation**: Deep blue color scheme inspired by Bolt.new
+✅ **ChatGPT-Style Interface**: Full-height chat container with message bubbles
+✅ **3-Line Search Bar**: Textarea input with proper styling and animations
+✅ **Message Animations**: Smooth slide-in animations for new messages
+✅ **Typing Indicators**: Animated dots during response loading
+✅ **Video References**: YouTube timestamp citations in responses
+✅ **Modern Styling**: Rounded corners, proper spacing, focus states
+✅ **Streamlined UX**: Removed welcome screen and suggestions for distraction-free searching
+✅ **Rebranded**: "what the FAQ" - optimized for lightning-fast searches
+
+### Package Update Summary:
+Successfully updated:
+- pip: 24.3.1 → 25.1.1 ✅
+
+Cannot update due to dependencies:
+- grpcio & grpcio-status: 1.70.0 (pinned in requirements.txt to prevent warnings)
+- google-ai-generativelanguage: 0.6.15 (required by google-generativeai 0.8.5)
+- pydantic_core: 2.33.2 (required by pydantic 2.11.7)
+- protobuf: 5.29.5 (constrained by grpcio-status and google-ai-generativelanguage)
+- cachetools: 5.5.2 (constrained by google-auth 2.40.3)
+
+# Development Guidelines
+
+## Complete File Analysis - Read Everything First
+
+**CRITICAL RULE: Always read and understand the ENTIRE file before making any changes or suggestions.**
+
+### Why This Matters
+- **Context is Everything**: Code at the bottom of a file may affect changes at the top
+- **Existing Patterns**: Understanding the full codebase patterns prevents inconsistent implementations
+- **Hidden Dependencies**: Functions, imports, or configurations later in the file may be relevant
+- **Avoid Duplication**: Functionality you're about to implement may already exist elsewhere in the file
+- **Maintain Style**: Consistent coding patterns and conventions throughout the file
+- **Prevent Breaking Changes**: Understanding all existing functionality prevents accidental breaks
+
+### Required Process
+
+#### Before Making ANY Changes:
+1. **Read the ENTIRE file** from top to bottom
+2. **Understand the file's purpose** and overall structure
+3. **Identify all existing functions, classes, and patterns**
+4. **Note the coding style and conventions used**
+5. **Map out dependencies and imports**
+6. **Understand the data flow and architecture**
+
+#### When Analyzing Related Files:
+1. **Read configuration files completely** (package.json, tsconfig.json, etc.)
+2. **Understand component hierarchies** by reading parent and child components fully
+3. **Review utility files entirely** to understand available helper functions
+4. **Check type definitions completely** to understand data structures
+
+### Implementation Guidelines
+
+#### ✅ DO:
+- Read every line of the target file before suggesting changes
+- Scan through related files to understand the broader context
+- Look for existing patterns and follow them consistently
+- Identify reusable functions or components already present
+- Understand the file's role in the larger application architecture
+- Ensure there is an env.local file to store api keys in
+
+#### ❌ DON'T:
+- Make assumptions about file contents based on filename alone
+- Suggest adding functionality that already exists in the file
+- Propose changes that break existing patterns without justification
+- Ignore configuration or setup code at the top/bottom of files
+- Skip reading imports, exports, or type definitions
+
+### Verification Checklist
+Before providing any code suggestions, confirm:
+- [ ] I have read the complete file from start to finish
+- [ ] I understand how my changes fit into the existing code structure
+- [ ] I have identified any existing similar functionality
+- [ ] I am following the established patterns and conventions
+- [ ] My changes won't conflict with existing code later in the file
+- [ ] I have considered all imports and dependencies
+
+## Extended Thinking and Deep Analysis Rules
+
+When approaching complex problems, feature implementations, or architectural decisions, use extended thinking to provide thorough analysis and well-reasoned solutions.
+
+### When to Use Extended Thinking
+Use extended thinking for:
+- Complex feature implementations that require multiple steps
+- Architectural decisions with trade-offs
+- Debugging complex issues
+- Code refactoring decisions
+- Performance optimization strategies
+- Database schema changes
+- Security considerations
+- Integration planning
+
+### Extended Thinking Format
+When encountering complex problems, think through them step-by-step:
+
+```
+<thinking>
+Let me think about this carefully...
+
+1. Understanding the problem:
+   - What exactly is being asked?
+   - What are the constraints?
+   - What are the potential edge cases?
+
+2. Analyzing the current state:
+   - What exists currently?
+   - What are the limitations?
+   - What needs to change?
+
+3. Considering approaches:
+   - Option A: [describe approach, pros/cons]
+   - Option B: [describe approach, pros/cons]
+   - Option C: [describe approach, pros/cons]
+
+4. Evaluating trade-offs:
+   - Performance implications
+   - Maintainability
+   - Scalability
+   - Developer experience
+   - User experience
+
+5. Implementation considerations:
+   - What files need to be modified?
+   - What dependencies are required?
+   - What testing is needed?
+   - What migration steps are required?
+
+Based on this analysis, I recommend [chosen approach] because [reasoning].
+</thinking>
+```
+
+### Response Structure
+After extended thinking, provide:
+
+1. **Summary**: Brief explanation of the recommended approach
+2. **Implementation Plan**: Step-by-step breakdown
+3. **Code Changes**: Specific files and modifications needed
+4. **Considerations**: Important notes about the implementation
+5. **Testing Strategy**: How to verify the solution works
+
+Always prioritize:
+- Code maintainability
+- Performance implications
+- User experience
+- Security considerations
+- Scalability
+
+## Question Only Mode
+When a prompt begins with "question", provide a direct, concise answer without executing commands, editing files, searching the codebase, or suggesting changes. Simply answer the question and wait for further instructions.
+
+## Debugging Principles
+
+### Core Principles
+- **Systematic Analysis:** Map components, dependencies, data flows, state changes, and architectural boundaries.
+- **Problem Decomposition:** Describe issues in plain language, use techniques like "Five Whys", and document reproduction steps.
+
+### Solution Strategy
+- **Immediate Actions:** Validate, enhance logging, check error handling, and monitor resources.
+- **Tactical Improvements:** Refactor, isolate components, harden interfaces, and update tests and documentation.
+- **Strategic Changes:** Evolve architecture, refine processes, and share knowledge.
+
+### Reasoning Process
+- **Uncertainty Phase:** Acknowledge complexity and list unknowns/assumptions.
+- **Analysis Phase:** Examine evidence, test assumptions, and identify patterns.
+- **Confidence Phase:** Validate conclusions and address counterpoints.
+
+### Debug Checklist
+Reproduce issues, document conditions, perform root cause analysis, develop solution options, implement minimal fixes, and verify with tests.
+
+### Async Code Debugging
+Confirm proper async/await usage, check for missing awaits, and avoid race conditions or memory leaks.
+
+### Documentation Search
+Construct queries with version numbers, error messages, and context for effective research.
+
+## Reasoning Checklist
+When asked to reason to debug, split your process into the steps below. Think methodically.
+
+- **Structured Thinking:**
+  - **Uncertainty:** List unknowns and assumptions clearly.
+  - **Analysis:** Evaluate evidence and test assumptions to find patterns
+  - **Confidence:** Validate conclusions and address counterpoints.
+- **Debug Process Steps:**
+  1. **Initial Assessment:** Reproduce issues, document conditions, and gather data.
+  2. **Root Cause Analysis:** Use the "Five Whys" technique and map error flows.
+  3. **Solution Development:** List approaches, plan implementation, and define success criteria.
+  4. **Implementation & Verification:** Create test cases, apply minimal fixes, add tests, and update documentation.
+
+## Pull Request Guide
+
+### PR Process Instructions
+1. **Branches:** Identify the base and compare branches.
+2. **Title:** Use the "[Cursor]" prefix in the title.
+3. **Description:** Clearly list changes, testing details, and any additional notes.
+4. **Merge Type:**
+   - **Feature-to-dev:** Use squash and merge.
+   - **Dev-to-main:** Use regular merge.
+5. **Post-Merge:** Decide if the merged branch should be deleted and if you need to switch back to a different branch.
+
+### Branching Workflow Overview
+- **main:** Production branch (stable; changes via PR merges only).
+- **dev:** Development branch (feature integrations and preview deployments).
+- **feature/*:** Feature branches (branch off dev and merge back once complete).
+
+## Additional Development Best Practices
+
+1. **Assertions & Validation:**
+   - Use assertions to validate internal assumptions during development
+   - Place assertions at function entry/exit points to verify inputs and outputs
+   - Reserve assertions for conditions that must always be true, not for regular error handling
+   - Focus on validating critical chat and form data flows
+
+2. **Code Quality Standards:**
+   - Configure TypeScript to treat warnings as errors for stricter type checking
+   - Resolve all warnings early in development to prevent cascading issues
+   - Document any intentionally ignored warnings with clear justification
+   - Implement stricter ESLint rules to catch potential issues early
+
+3. **Structural Decision-Making:**
+   - Prioritize simplicity and readability in all new components
+   - Evaluate solutions based on scalability, maintainability, security, and performance
+   - Apply Test-Driven Development for critical features (especially API routes)
+   - Improve CI/CD practices to maintain high code standards
+
+4. **General Engineering Principles:**
+   - Never ignore errors silently; handle or propagate them explicitly
+   - Minimize global state and side effects (especially in the chat implementation)
+   - Document complex logic with clear comments explaining the intent
+   - Keep dependencies minimal and regularly audit them for security
+   - Separate concerns by creating focused, modular components
+
+## Roadmap Handling
+When presented with a roadmap:
+- NEVER delete roadmap sections unless explicitly instructed
+- Continue checking off completed items
+- If deletion seems necessary due to context limits: REQUEST permission, do not auto-delete
+- User retains all deletion authority
+- Preserve roadmap integrity throughout project lifecycle
