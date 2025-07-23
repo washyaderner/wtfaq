@@ -8,13 +8,13 @@ export default async function DashboardPage() {
   const supabase = await createClient()
   
   // Fetch user's channels
-  const { data: channels, error: channelsError } = await supabase
+  const { data: channels } = await supabase
     .from('channels')
     .select('*')
     .order('created_at', { ascending: false })
 
   // Fetch user's profile to check API key
-  const { data: profile, error: profileError } = await supabase
+  const { data: profile } = await supabase
     .from('profiles')
     .select('openai_api_key')
     .single()
